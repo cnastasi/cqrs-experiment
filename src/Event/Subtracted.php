@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace CQRS\Command;
+namespace CQRS\Event;
 
-final class Add implements CounterCommand
+class Subtracted
 {
     private int $value;
 
@@ -13,7 +13,7 @@ final class Add implements CounterCommand
         $this->value = $value;
     }
 
-    public function value(): int
+    public function getValue(): int
     {
         return $this->value;
     }

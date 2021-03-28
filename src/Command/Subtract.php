@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CQRS\Command;
 
-class Subtract
+class Subtract implements CounterCommand
 {
     private int $value;
 

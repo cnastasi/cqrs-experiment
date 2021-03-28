@@ -24,14 +24,14 @@ class Counter implements EventListener
         $this->eventBus->addListener($this);
     }
 
-    public function plus()
+    public function plus(int $value): void
     {
-        $this->eventBus->dispatch(new Add(1));
+        $this->eventBus->dispatch(new Add($value));
     }
 
-    public function minus()
+    public function minus(int $value): void
     {
-        $this->eventBus->dispatch(new Subtract(1));
+        $this->eventBus->dispatch(new Subtract($value));
     }
 
     public function apply(object $event): void {

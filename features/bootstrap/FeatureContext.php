@@ -2,6 +2,11 @@
 
 use Behat\Behat\Context\Context;
 use CQRS\Aggregate\Counter;
+use CQRS\Command\Add;
+use CQRS\Command\CommandBus;
+use CQRS\Command\CounterCommandHandler;
+use CQRS\Command\Subtract;
+use CQRS\Event\EventStore;
 use CQRS\State\CounterState;
 use CQRS\Event\EventBus;
 use function PHPUnit\Framework\assertSame;
@@ -14,6 +19,7 @@ class FeatureContext implements Context
     private Counter $counter;
     private CounterState $counterState;
     private EventBus $eventBus;
+    private CommandBus $commandBus;
 
     /**
      * Initializes context.
@@ -32,8 +38,13 @@ class FeatureContext implements Context
     public function theCounterSetTo(int $value): void
     {
         $this->eventBus = new EventBus();
+        $this->commandBus = new CommandBus();
+        $this->eventStore = new EventStore($this->eventBus);
+
         $this->counterState = new CounterState($value);
         $this->counter = new Counter($this->counterState, $this->eventBus);
+
+        $this->commandBus->registerHandler(new CounterCommandHandler($this->counter));
     }
 
     /**
@@ -41,7 +52,7 @@ class FeatureContext implements Context
      */
     public function plusButtonIsPressed(): void
     {
-        $this->counter->plus();
+        $this->commandBus->dispatch(new Add(1));
     }
 
     /**
@@ -57,6 +68,6 @@ class FeatureContext implements Context
      */
     public function minusButtonIsPressed()
     {
-        $this->counter->minus();
+        $this->commandBus->dispatch(new Subtract(1));
     }
 }
