@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace CQRS\Command;
+namespace CQRS\Domain\Counter\Command;
 
-use CQRS\Aggregate\Counter;
-use CQRS\Event\EventBus;
-use CQRS\Event\EventStore;
-use CQRS\State\CounterState;
+use CQRS\Domain\Counter\Counter;
+use CQRS\Infrastructure\Command\CommandHandler;
+use CQRS\Infrastructure\Event\EventBus;
+use CQRS\Infrastructure\Event\EventStore;
 
 class CounterCommandHandler implements CommandHandler
 {
@@ -41,5 +41,4 @@ class CounterCommandHandler implements CommandHandler
                 break;
         }
     }
-
 }

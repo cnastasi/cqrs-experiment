@@ -1,15 +1,14 @@
 <?php
 
 use Behat\Behat\Context\Context;
-use CQRS\Aggregate\Counter;
-use CQRS\Command\Add;
-use CQRS\Command\CommandBus;
-use CQRS\Command\CounterCommandHandler;
-use CQRS\Command\Subtract;
-use CQRS\Event\CounterInitialized;
-use CQRS\Event\EventStore;
-use CQRS\State\CounterState;
-use CQRS\Event\EventBus;
+use CQRS\Domain\Counter\Command\Add;
+use CQRS\Domain\Counter\Command\CounterCommandHandler;
+use CQRS\Domain\Counter\Command\Subtract;
+use CQRS\Domain\Counter\Counter;
+use CQRS\Domain\Counter\Event\CounterInitialized;
+use CQRS\Infrastructure\Command\CommandBus;
+use CQRS\Infrastructure\Event\EventBus;
+use CQRS\Infrastructure\Event\EventStore;
 use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertTrue;
 
@@ -21,17 +20,6 @@ class FeatureContext implements Context
     private EventBus $eventBus;
     private CommandBus $commandBus;
     private EventStore $eventStore;
-
-    /**
-     * Initializes context.
-     *
-     * Every scenario gets its own context instance.
-     * You can also pass arbitrary arguments to the
-     * context constructor through behat.yml.
-     */
-    public function __construct()
-    {
-    }
 
     /**
      * @Given the counter set to :value
@@ -49,7 +37,7 @@ class FeatureContext implements Context
     }
 
     /**
-     * @When /^plus button is pressed$/
+     * @When plus button is pressed
      */
     public function plusButtonIsPressed(): void
     {
@@ -68,7 +56,7 @@ class FeatureContext implements Context
     }
 
     /**
-     * @When /^minus button is pressed$/
+     * @When minus button is pressed
      */
     public function minusButtonIsPressed()
     {
@@ -76,7 +64,7 @@ class FeatureContext implements Context
     }
 
     /**
-     * @Given /^he win a puppy$/
+     * @Given he win a puppy
      */
     public function heWinAPuppy()
     {

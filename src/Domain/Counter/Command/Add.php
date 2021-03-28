@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace CQRS\Command;
+namespace CQRS\Domain\Counter\Command;
 
-class Subtract implements CounterCommand
+final class Add implements CounterCommand
 {
     private int $value;
 

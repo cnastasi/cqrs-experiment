@@ -2,15 +2,14 @@
 
 declare(strict_types=1);
 
-namespace CQRS\State;
+namespace CQRS\Domain\Counter;
 
-use CQRS\Command\Add;
-use CQRS\Command\Subtract;
-use CQRS\Event\Added;
-use CQRS\Event\CounterInitialized;
-use CQRS\Event\EventStore;
-use CQRS\Event\LowerLimitReached;
-use CQRS\Event\Subtracted;
+use CQRS\Domain\Counter\Event\Added;
+use CQRS\Domain\Counter\Event\CounterInitialized;
+use CQRS\Domain\Counter\Event\LowerLimitReached;
+use CQRS\Domain\Counter\Event\Subtracted;
+use CQRS\Infrastructure\Event\EventStore;
+use LogicException;
 
 final class CounterState
 {
@@ -26,28 +25,27 @@ final class CounterState
         }
     }
 
-    public function value(): int
+    public function apply(object $event): void
     {
-        return $this->value;
-    }
-
-    public function apply(object $event): void {
         if ($event instanceof CounterInitialized) {
             $this->value = $event->initValue();
         }
         if ($event instanceof Added) {
             $this->value += $event->value();
-        }
-        else if ($event instanceof LowerLimitReached) {
-            $this->limitReached ++;
-        }
-        else if ($event instanceof Subtracted) {
+        } else if ($event instanceof LowerLimitReached) {
+            $this->limitReached++;
+        } else if ($event instanceof Subtracted) {
             $this->value -= $event->value();
 
             if ($this->value < 0) {
-                throw new \LogicException('Counter must not be negative');
+                throw new LogicException('Counter must not be negative');
             }
         }
+    }
+
+    public function value(): int
+    {
+        return $this->value;
     }
 
     public function hasWon()

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CQRS\Command;
+namespace CQRS\Domain\Counter\Command;
 
 interface CounterCommand
 {

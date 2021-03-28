@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CQRS\Event;
+namespace CQRS\Domain\Counter\Event;
 
 class Subtracted
 {

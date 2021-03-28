@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-namespace CQRS\Aggregate;
+namespace CQRS\Domain\Counter;
 
 
 use Closure;
-use CQRS\Event\Added;
-use CQRS\Event\EventStore;
-use CQRS\Event\LowerLimitReached;
-use CQRS\Event\Subtracted;
-use CQRS\State\CounterState;
-use CQRS\Event\EventBus;
+use CQRS\Domain\Counter\Event\Added;
+use CQRS\Domain\Counter\Event\LowerLimitReached;
+use CQRS\Domain\Counter\Event\Subtracted;
+use CQRS\Infrastructure\Event\EventBus;
+use CQRS\Infrastructure\Event\EventStore;
 
 class Counter
 {
@@ -23,6 +22,16 @@ class Counter
         $this->state = $state;
 
         $this->eventBus = $eventBus;
+    }
+
+    public static function create(EventStore $eventStore, EventBus $eventBus)
+    {
+        $state = new CounterState($eventStore);
+
+        return new Counter($state, function (object $event) use ($state, $eventBus) {
+            $state->apply($event);
+            $eventBus->dispatch($event);
+        });
     }
 
     public function plus(int $value): void
@@ -39,16 +48,8 @@ class Counter
         }
     }
 
-    public static function create(EventStore $eventStore, EventBus $eventBus) {
-        $state = new CounterState($eventStore);
-
-        return new Counter($state, function (object $event) use ($state, $eventBus) {
-            $state->apply($event);
-            $eventBus->dispatch($event);
-        });
-    }
-
-    public function value(): int {
+    public function value(): int
+    {
         return $this->state->value();
     }
 

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace CQRS\Command;
+namespace CQRS\Domain\Counter\Event;
 
-final class Add implements CounterCommand
+class Added
 {
     private int $value;
 

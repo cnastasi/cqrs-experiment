@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CQRS\Event;
+namespace CQRS\Infrastructure\Event;
 
 interface EventListener
 {
