@@ -1,0 +1,25 @@
+{
+  "name": "vendor_name/cqrs",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "cnastasi",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "php": "^8.0",
+    "phpunit/phpunit": "^9.5"
+
+  },
+  "require-dev": {
+    "behat/behat": "^3.8"
+  },
+  "autoload": {
+    "psr-4": {
+      "CQRS\\": "src/"
+    }
+  }
+}
