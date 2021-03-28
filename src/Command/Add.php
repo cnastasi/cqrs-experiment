@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace CQRS;
+namespace CQRS\Command;
 
-class Subtract
+final class Add
 {
     private int $value;
 

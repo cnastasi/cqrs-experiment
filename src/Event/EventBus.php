@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CQRS;
+namespace CQRS\Event;
 
 class EventBus
 {

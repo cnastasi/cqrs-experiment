@@ -21,5 +21,11 @@
     "psr-4": {
       "CQRS\\": "src/"
     }
+  },
+  "scripts": {
+    "test": [
+      "@test:functional"
+    ],
+    "test:functional": "vendor/bin/behat"
   }
 }

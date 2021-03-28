@@ -1,9 +1,9 @@
 <?php
 
 use Behat\Behat\Context\Context;
-use CQRS\Counter;
-use CQRS\CounterState;
-use CQRS\EventBus;
+use CQRS\Aggregate\Counter;
+use CQRS\State\CounterState;
+use CQRS\Event\EventBus;
 use function PHPUnit\Framework\assertSame;
 
 /**

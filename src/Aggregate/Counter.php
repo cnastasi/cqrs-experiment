@@ -2,8 +2,14 @@
 
 declare(strict_types=1);
 
-namespace CQRS;
+namespace CQRS\Aggregate;
 
+
+use CQRS\Command\Add;
+use CQRS\State\CounterState;
+use CQRS\Event\EventBus;
+use CQRS\Event\EventListener;
+use CQRS\Command\Subtract;
 
 class Counter implements EventListener
 {
