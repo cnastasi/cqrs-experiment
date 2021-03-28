@@ -5,42 +5,55 @@ declare(strict_types=1);
 namespace CQRS\Aggregate;
 
 
-use CQRS\Command\Add;
+use Closure;
+use CQRS\Event\Added;
+use CQRS\Event\EventStore;
+use CQRS\Event\LowerLimitReached;
+use CQRS\Event\Subtracted;
 use CQRS\State\CounterState;
 use CQRS\Event\EventBus;
-use CQRS\Event\EventListener;
-use CQRS\Command\Subtract;
 
-class Counter implements EventListener
+class Counter
 {
     private CounterState $state;
-    private EventBus $eventBus;
+    private Closure $eventBus;
 
-    public function __construct(CounterState $state, EventBus $eventBus)
+    private function __construct(CounterState $state, Closure $eventBus)
     {
         $this->state = $state;
-        $this->eventBus = $eventBus;
 
-        $this->eventBus->addListener($this);
+        $this->eventBus = $eventBus;
     }
 
     public function plus(int $value): void
     {
-        $this->eventBus->dispatch(new Add($value));
+        ($this->eventBus)(new Added($value));
     }
 
     public function minus(int $value): void
     {
-        $this->eventBus->dispatch(new Subtract($value));
+        if ($this->state->value() === 0) {
+            ($this->eventBus)(new LowerLimitReached());
+        } else {
+            ($this->eventBus)(new Subtracted($value));
+        }
     }
 
-    public function apply(object $event): void {
-        if ($event instanceof Add) {
-            $this->state->addBy($event->value());
-        }
-        else if ($event instanceof Subtract) {
-            $this->state->subtractBy($event->value());
+    public static function create(EventStore $eventStore, EventBus $eventBus) {
+        $state = new CounterState($eventStore);
 
-        }
+        return new Counter($state, function (object $event) use ($state, $eventBus) {
+            $state->apply($event);
+            $eventBus->dispatch($event);
+        });
+    }
+
+    public function value(): int {
+        return $this->state->value();
+    }
+
+    public function hasWon(): bool
+    {
+        return $this->state->hasWon();
     }
 }

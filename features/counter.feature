@@ -29,3 +29,14 @@ Feature: Counter should count
     When minus button is pressed
     When minus button is pressed
     Then the counter value is 0
+
+  Scenario: Player will win a puppy
+    Given the counter set to 1
+    When minus button is pressed
+    When minus button is pressed
+    When minus button is pressed
+    When minus button is pressed
+    When minus button is pressed
+    When minus button is pressed
+    Then the counter value is 0
+    And he win a puppy

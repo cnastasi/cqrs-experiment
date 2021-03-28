@@ -6,14 +6,14 @@ namespace CQRS\Event;
 
 class Added
 {
-    private string $value;
+    private int $value;
 
-    public function __construct(string $value)
+    public function __construct(int $value)
     {
         $this->value = $value;
     }
 
-    public function value(): string
+    public function value(): int
     {
         return $this->value;
     }

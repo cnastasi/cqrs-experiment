@@ -13,7 +13,7 @@ class Subtracted
         $this->value = $value;
     }
 
-    public function getValue(): int
+    public function value(): int
     {
         return $this->value;
     }

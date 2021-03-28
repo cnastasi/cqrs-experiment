@@ -6,20 +6,21 @@ use CQRS\Command\Add;
 use CQRS\Command\CommandBus;
 use CQRS\Command\CounterCommandHandler;
 use CQRS\Command\Subtract;
+use CQRS\Event\CounterInitialized;
 use CQRS\Event\EventStore;
 use CQRS\State\CounterState;
 use CQRS\Event\EventBus;
 use function PHPUnit\Framework\assertSame;
+use function PHPUnit\Framework\assertTrue;
 
 /**
  * Defines application features from the specific context.
  */
 class FeatureContext implements Context
 {
-    private Counter $counter;
-    private CounterState $counterState;
     private EventBus $eventBus;
     private CommandBus $commandBus;
+    private EventStore $eventStore;
 
     /**
      * Initializes context.
@@ -37,14 +38,14 @@ class FeatureContext implements Context
      */
     public function theCounterSetTo(int $value): void
     {
+        $this->eventStore = new EventStore();
+        $this->eventStore->apply(new CounterInitialized($value));
+
         $this->eventBus = new EventBus();
+        $this->eventBus->addListener($this->eventStore);
+
         $this->commandBus = new CommandBus();
-        $this->eventStore = new EventStore($this->eventBus);
-
-        $this->counterState = new CounterState($value);
-        $this->counter = new Counter($this->counterState, $this->eventBus);
-
-        $this->commandBus->registerHandler(new CounterCommandHandler($this->counter));
+        $this->commandBus->registerHandler(new CounterCommandHandler($this->eventStore, $this->eventBus));
     }
 
     /**
@@ -60,7 +61,10 @@ class FeatureContext implements Context
      */
     public function theCounterValueIs(int $value): void
     {
-        assertSame($value, $this->counterState->value());
+
+        $counter = Counter::create($this->eventStore, $this->eventBus);
+
+        assertSame($value, $counter->value());
     }
 
     /**
@@ -69,5 +73,16 @@ class FeatureContext implements Context
     public function minusButtonIsPressed()
     {
         $this->commandBus->dispatch(new Subtract(1));
+    }
+
+    /**
+     * @Given /^he win a puppy$/
+     */
+    public function heWinAPuppy()
+    {
+        $counter = Counter::create($this->eventStore, $this->eventBus);
+
+        assertTrue($counter->hasWon());
+
     }
 }

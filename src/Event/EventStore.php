@@ -8,13 +8,12 @@ class EventStore implements EventListener
 {
     private array $stream = [];
 
-    public function __construct(EventBus $eventBus)
-    {
-        $eventBus->addListener($this);
-    }
-
     public function apply(object $event): void
     {
         $this->stream[] = $event;
+    }
+
+    public function stream():array {
+        return $this->stream;
     }
 }
